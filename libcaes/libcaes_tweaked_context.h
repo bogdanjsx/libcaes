@@ -78,6 +78,13 @@ int libcaes_crypt_xts(
      size_t output_data_size,
      libcerror_error_t **error );
 
+LIBCAES_EXTERN \
+int libcaes_context_convert_xts(
+     libcaes_tweaked_context_t **tweaked_context,
+     libcaes_context_t *context,
+     int mode,
+     libcerror_error_t **error );
+
 #ifdef __cplusplus
 }
 #endif

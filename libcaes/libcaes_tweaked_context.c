@@ -478,7 +478,7 @@ int libcaes_crypt_xts(
 					 LIBCERROR_MEMORY_ERROR_COPY_FAILED,
 					 "%s: unable to copy encrypted tweak value.",
 					 function );
-				
+
 					goto on_error;
 				}
 				/* Update the encrypted tweak value for the next 16-byte block
@@ -607,7 +607,7 @@ int libcaes_crypt_xts(
 				 LIBCERROR_MEMORY_ERROR_COPY_FAILED,
 				 "%s: unable to copy encrypted tweak value.",
 				 function );
-			
+
 				goto on_error;
 			}
 			if( memory_set(
@@ -758,3 +758,60 @@ on_error:
 	return( -1 );
 }
 
+int libcaes_context_convert_xts(
+     libcaes_tweaked_context_t **tweaked_context,
+     libcaes_context_t *context,
+     int mode,
+     libcerror_error_t **error )
+
+{
+
+	libcaes_internal_context_t *internal_context = NULL;
+	static char *function                        = "libcaes_crypt_ecb";
+	int result                                   = 1;
+
+	if( libcaes_tweaked_context_initialize(tweaked_context, error) != 1 ) {
+		libcerror_error_set(
+		error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to initialize encryption context.",
+		 function );
+		goto on_error;
+	}
+
+	internal_context = (libcaes_internal_context_t *) context;
+	uint8_t *main_key = NULL; // Should extract first half of context key
+	uint8_t *tweak_key = NULL; // Should extract second half of context key
+	size_t key_size = 0 // Should extract size from context and divide by 2
+
+	if( libcaes_tweaked_context_set_keys(
+			*tweaked_context,
+			mode,
+			main_key,
+			key_size,
+			tweak_key,
+			key_size,
+			error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set key in encryption context.",
+		 function );
+
+		goto on_error;
+	}
+
+	libcaes_tweaked_context_set_keys(
+		*tweaked_context,
+		mode,
+		main_key,
+		key_size,
+		tweak_key,
+		key_size,
+		error );
+
+	return result;
+}
